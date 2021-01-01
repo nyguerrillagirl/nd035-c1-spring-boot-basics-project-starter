@@ -2,6 +2,8 @@ package com.udacity.jwdnd.course1.cloudstorage.services;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,19 +17,19 @@ import com.udacity.jwdnd.course1.cloudstorage.model.User;
 @Service
 public class AuthenticationService implements AuthenticationProvider {
 
+	private static Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
+
 	@Autowired
 	private UserMapper userMapper;
 	
 	@Autowired
 	private HashService hashService;
 	
-
-
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String username = authentication.getName();
 		String password = authentication.getCredentials().toString();
-		
+		logger.info("AuthenticationService - authenticate; username: " + username);
 		User user = userMapper.getUserByName(username);
 		if (user != null) {
 			String encodedSalt = user.getSalt();
@@ -36,6 +38,7 @@ public class AuthenticationService implements AuthenticationProvider {
 				return new UsernamePasswordAuthenticationToken(username, password, new ArrayList<>());
 			}
 		}
+		logger.info("AuthenticationService - authenticate; User object null!");
 		return null;
 	}
 

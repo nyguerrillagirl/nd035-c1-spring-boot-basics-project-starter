@@ -16,7 +16,7 @@ import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
  * @author lafig
  *
  */
-@Component
+//@Component
 public class UserCommandLineRunner implements CommandLineRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(UserCommandLineRunner.class);
