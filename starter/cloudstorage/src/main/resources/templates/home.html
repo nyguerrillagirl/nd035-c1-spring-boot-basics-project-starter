@@ -11,7 +11,7 @@
     <body class="p-3 mb-2 bg-light text-black">
         <div class="container">
             <div id="logoutDiv">
-                <form action="#" method="POST">
+                <form action="#" method="POST" th:action="@{/logout}">
                     <button type="submit" class="btn btn-secondary float-right">Logout</button>
                 </form>
             </div>
@@ -49,11 +49,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                <!--  THIS IS WHERE WE DISPLAY THE USER'S FILES -->
+                                
                                 <tr>
                                     <td>
                                         <a target="_blank" class="btn btn-success">View</a>
                                         <a  class="btn btn-danger">Delete</a>
                                     </td>
+              
                                     <th scope="row">ExampleFile.txt</th>
                                 </tr>
                                 </tbody>
