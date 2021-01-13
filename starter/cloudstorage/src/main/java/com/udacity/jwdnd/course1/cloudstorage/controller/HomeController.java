@@ -10,14 +10,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.udacity.jwdnd.course1.cloudstorage.common.CloudStorageConstants;
+import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.storage.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.storage.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.storage.NoteService;
+import com.udacity.jwdnd.course1.cloudstorage.services.storage.StorageException;
 
 @Controller
 @RequestMapping("/home")
@@ -38,6 +41,19 @@ public class HomeController {
 
 	@GetMapping
 	public String getHomePage() {
+		return "home";
+	}
+	
+	@PostMapping("/credential")
+	public String addCredential(Authentication authentication, CredentialForm credentialForm, Model model) {
+		String signupError = null;	
+		String userName = authentication.getName();
+		try {
+			credentialService.insertUserStoredData(credentialForm, userName);
+		} catch (StorageException e) {
+			signupError = e.getMessage();
+			model.addAttribute("signupError", signupError);
+		}
 		return "home";
 	}
 	
