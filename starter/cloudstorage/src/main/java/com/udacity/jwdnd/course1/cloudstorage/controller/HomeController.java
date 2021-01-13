@@ -1,7 +1,5 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,16 +25,16 @@ import com.udacity.jwdnd.course1.cloudstorage.services.storage.StorageException;
 @RequestMapping("/home")
 public class HomeController {
 	private static Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
+
 	@Autowired
 	private FileService fileService;
-	
+
 	@Autowired
 	private NoteService noteService;
-	
+
 	@Autowired
 	private CredentialService credentialService;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -43,10 +42,26 @@ public class HomeController {
 	public String getHomePage() {
 		return "home";
 	}
-	
+
+	@GetMapping("/credential/{credentialid}")
+	public String deleteCredential(@PathVariable("credentialid") Integer credentialid, Authentication authentication,
+			Model model) {
+		
+		String signupError = null;
+		String userName = authentication.getName();
+		try {
+			credentialService.deleteUserStoredData(credentialid, userName);
+		} catch (StorageException e) {
+			signupError = e.getMessage();
+			model.addAttribute("signupError", signupError);
+		}		
+		allUserFiles(authentication, model);
+		return "home";
+	}
+
 	@PostMapping("/credential")
 	public String addCredential(Authentication authentication, CredentialForm credentialForm, Model model) {
-		String signupError = null;	
+		String signupError = null;
 		String userName = authentication.getName();
 		try {
 			credentialService.insertUserStoredData(credentialForm, userName);
@@ -54,9 +69,10 @@ public class HomeController {
 			signupError = e.getMessage();
 			model.addAttribute("signupError", signupError);
 		}
+		allUserFiles(authentication, model);
 		return "home";
 	}
-	
+
 	@ModelAttribute
 	public void allUserFiles(Authentication authentication, Model model) {
 		String userName = authentication.getName();

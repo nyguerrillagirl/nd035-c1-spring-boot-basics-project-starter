@@ -42,7 +42,7 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 		Credential credentialRecord = new Credential();
 
 		// Save owner of this credential resource
-		User user = this.getUser(username);
+		User user = getUser(username);
 		credentialRecord.setUserid(user.getUserid());
 		// Save the username and url
 		credentialRecord.setUsername(formRecord.getUsername());
@@ -78,7 +78,18 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 
 	@Override
 	public void deleteUserStoredData(Integer credentialid, String username) {
-
+		User user = getUser(username);
+		Credential credentialRecord = mapper.findCredential(credentialid);
+		if  (credentialRecord == null) {
+			throw new StorageException("That record does not exist.");
+		}
+		if (userOwnsResource(user, credentialRecord.getUserid())) {
+			// go ahead and delete
+			mapper.deleteCredential(credentialid);
+		} else {
+			throw new StorageException(String.format("User %s does not own this credential resource", username));
+		}
+		
 	}
 
 	/**

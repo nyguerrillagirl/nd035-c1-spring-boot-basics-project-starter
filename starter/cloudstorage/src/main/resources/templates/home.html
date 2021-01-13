@@ -180,8 +180,8 @@
 								<tr th:each="credentialEntry : ${credentialList}"
 									th:if="${credentialList!=null and credentialList.size() > 0}">
 									<td>
-										<button type="button" class="btn btn-success">Edit</button> <a
-										class="btn btn-danger">Delete</a>
+										<button type="button" class="btn btn-success">Edit</button> 
+										<a class="btn btn-danger" th:href="@{/home/credential/{credentialid}(credentialid=${credentialEntry.credentialid})}">Delete</a>
 									</td>
 									<th scope="row" th:text="${credentialEntry.url}">Example
 										Credential URL</th>
