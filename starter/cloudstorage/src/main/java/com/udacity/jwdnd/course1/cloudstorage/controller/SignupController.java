@@ -47,15 +47,16 @@ public class SignupController {
 				signupError = "There was an error signing you up. Please try again.";
 			} 
 		}
-		
+		String targetPage = "login";
 		if (signupError == null) {
 			logger.info("signupUSer - signupSuccess");
 			model.addAttribute("signupSuccess", true);
 		} else {
 			logger.info("signupUSer - signupError");
+			targetPage = "signup";
 			model.addAttribute("signupError", signupError);
 		}
-		return "signup";
+		return targetPage;
 	}
 
 }

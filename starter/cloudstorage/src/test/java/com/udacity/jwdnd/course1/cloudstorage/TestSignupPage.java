@@ -74,8 +74,8 @@ class TestSignupPage {
 		signupPage.signup("Peter", "Zastoupil", TEST_USER_NAME, password);
 
 		Thread.sleep(2000);
-		// Check for success message
-		assertTrue(signupPage.isSignupSuccessful());
+		// Check for Login Page
+		Assertions.assertEquals("Login", driver.getTitle());
 
 	}
 
