@@ -64,7 +64,14 @@ public class HomeController {
 		String signupError = null;
 		String userName = authentication.getName();
 		try {
-			credentialService.insertUserStoredData(credentialForm, userName);
+			// need to determine if this is an insert or update
+			if (credentialForm.getCredentialId() == null) {
+				// new entry
+				credentialService.insertUserStoredData(credentialForm, userName);
+			} else {
+				credentialService.updateUserStoredData(credentialForm, userName, credentialForm.getCredentialId());
+			}
+			
 		} catch (StorageException e) {
 			signupError = e.getMessage();
 			model.addAttribute("signupError", signupError);

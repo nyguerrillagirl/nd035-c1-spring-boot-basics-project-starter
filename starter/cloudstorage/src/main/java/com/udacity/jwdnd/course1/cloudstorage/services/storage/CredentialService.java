@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.services.storage;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -9,13 +10,14 @@ import org.springframework.stereotype.Service;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.model.CredentialEnhancedRecord;
 import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 
 @Service
-public class CredentialService extends StorageServiceUtility implements StorageService<CredentialForm, Credential> {
+public class CredentialService extends StorageServiceUtility implements StorageService<CredentialForm, CredentialEnhancedRecord> {
 
 	@Autowired
 	private CredentialMapper mapper;
@@ -27,16 +29,20 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 	}
 
 	@Override
-	public List<Credential> getUsersStoredData(Integer userid) {
+	public List<CredentialEnhancedRecord> getUsersStoredData(Integer userid) {
 		List<Credential> credentialList = mapper.getAllUserCredentials(userid);
+		
+		List<CredentialEnhancedRecord> credentialEnhanced = new ArrayList<CredentialEnhancedRecord>();
 		for (Credential aCredentialRecord : credentialList) {
+			CredentialEnhancedRecord record = new CredentialEnhancedRecord(aCredentialRecord);
 			String unenryptedPassword = encryptionService.decryptValue(aCredentialRecord.getPassword(),
 					aCredentialRecord.getKey());
-			aCredentialRecord.setPassword(unenryptedPassword);
+			record.setClearPassword(unenryptedPassword);
+			credentialEnhanced.add(record);
 		}
-		return credentialList;
+		return credentialEnhanced;
 	}
-
+	
 	@Override
 	public void insertUserStoredData(CredentialForm formRecord, String username) {
 		Credential credentialRecord = new Credential();
@@ -61,7 +67,7 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 		String encryptedPassword = encryptionService.encryptValue(password, encodedKey);
 		credentialRecord.setPassword(encryptedPassword);
 
-		if (additionalContraintsPassed(credentialRecord)) {
+		if (additionalContraintsPassed(new CredentialEnhancedRecord(credentialRecord))) {
 			// save the record
 			mapper.insertCredential(credentialRecord);
 		} else {
@@ -72,8 +78,30 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 
 	@Override
 	public void updateUserStoredData(CredentialForm formRecord, String username, Integer id) {
-		// TODO Auto-generated method stub
-
+		// Get User record
+		User user = getUser(username);
+		
+		// Get credentialRecord
+		Credential credential = mapper.findCredential(id);
+		
+		// Now check if this credential record belongs to this user
+		if (userOwnsResource(user, credential.getUserid())) {
+			// Update all key fields: username, url and password
+			credential.setUrl(formRecord.getUrl());
+			credential.setUsername(formRecord.getUsername());
+			
+			// encrypt the password using the key
+			String password = formRecord.getPassword();
+			String encryptedPassword = encryptionService.encryptValue(password, credential.getKey());
+			credential.setPassword(encryptedPassword);
+			
+			// Save updates		
+			mapper.updateCredential(credential);
+		} else {
+			throw new StorageException(String.format("Credential record does not belong to the user: %s.",
+					username));
+		}
+		
 	}
 
 	@Override
@@ -98,12 +126,13 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 	 * are saving the same credential into the database
 	 */
 	@Override
-	public boolean additionalContraintsPassed(Credential modelRecord) {
+	public boolean additionalContraintsPassed(CredentialEnhancedRecord modelRecord) {
 		// See if we have a record matching this Credential record --> user should be
 		// doing an update!
 		Credential credentialRecord = mapper.findMatchingUseridUrlAndUsername(modelRecord.getUserid(),
 				modelRecord.getUrl(), modelRecord.getUsername());
 		return credentialRecord == null;
 	}
+	
 
 }

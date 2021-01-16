@@ -6,6 +6,9 @@ public class CredentialForm {
 	private String username;
 	private String password;
 	
+	// populated during an update
+	private Integer credentialId;
+	
 	public String getUrl() {
 		return url;
 	}
@@ -30,4 +33,12 @@ public class CredentialForm {
 		this.password = password;
 	}
 
+	public Integer getCredentialId() {
+		return credentialId;
+	}
+
+	public void setCredentialId(Integer credentialId) {
+		this.credentialId = credentialId;
+	}	
+	
 }

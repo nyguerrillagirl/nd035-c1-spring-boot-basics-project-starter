@@ -21,6 +21,8 @@ public abstract class StorageServiceUtility {
 	}
 	
 	protected boolean userOwnsResource(User user, Integer userId) {
+		System.out.println("User record: " + user.toString());
+		System.out.println("userId: " + userId);
 		return user.getUserid().intValue() == userId.intValue();
 	}
 
