@@ -1,9 +1,13 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,10 +16,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sun.net.httpserver.Headers;
 import com.udacity.jwdnd.course1.cloudstorage.common.CloudStorageConstants;
 import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
+import com.udacity.jwdnd.course1.cloudstorage.model.FileEntity;
 import com.udacity.jwdnd.course1.cloudstorage.model.FileForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
@@ -29,9 +36,9 @@ import com.udacity.jwdnd.course1.cloudstorage.services.storage.StorageException;
 @RequestMapping("/home")
 public class HomeController {
 	private static Logger logger = LoggerFactory.getLogger(HomeController.class);
-	
+
 	private static final String HOME_MESSAGE_FIELD = "messageField";
-	
+
 	@Autowired
 	private FileService fileService;
 
@@ -44,18 +51,16 @@ public class HomeController {
 	@Autowired
 	private UserService userService;
 
- 
-	
 	@GetMapping
 	public String getHomePage() {
 		return "home";
 	}
 
-	//---------- CREDENTIAL ----------
+	// ---------- CREDENTIAL ----------
 	@GetMapping("/credential/{credentialid}")
 	public String deleteCredential(@PathVariable("credentialid") Integer credentialid, Authentication authentication,
 			Model model) {
-		
+
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
@@ -64,11 +69,11 @@ public class HomeController {
 		} catch (StorageException e) {
 			storageError = e.getMessage();
 			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
-		}		
+		}
 		allUserFiles(authentication, model);
 		return "home";
 	}
-		
+
 	@PostMapping("/credential")
 	public String addorUpdateCredential(Authentication authentication, CredentialForm credentialForm, Model model) {
 		String signupError = null;
@@ -83,7 +88,7 @@ public class HomeController {
 				credentialService.updateUserStoredData(credentialForm, userName);
 				model.addAttribute(HOME_MESSAGE_FIELD, "Successfully updated credential item.");
 			}
-			
+
 		} catch (StorageException e) {
 			signupError = e.getMessage();
 			model.addAttribute(HOME_MESSAGE_FIELD, signupError);
@@ -91,12 +96,11 @@ public class HomeController {
 		allUserFiles(authentication, model);
 		return "home";
 	}
-	
-	//---------- NOTE ----------
+
+	// ---------- NOTE ----------
 	@GetMapping("/note/{noteid}")
-	public String deleteNote(@PathVariable("noteid") Integer noteid, Authentication authentication,
-			Model model) {
-		
+	public String deleteNote(@PathVariable("noteid") Integer noteid, Authentication authentication, Model model) {
+
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
@@ -105,11 +109,11 @@ public class HomeController {
 		} catch (StorageException e) {
 			storageError = e.getMessage();
 			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
-		}		
+		}
 		allUserFiles(authentication, model);
 		return "home";
 	}
-	
+
 	@PostMapping("/note")
 	public String addOrUpdateNote(Authentication authentication, NoteForm noteForm, Model model) {
 		String storageError = null;
@@ -125,7 +129,7 @@ public class HomeController {
 				noteService.updateUserStoredData(noteForm, userName);
 				model.addAttribute(HOME_MESSAGE_FIELD, "Successfully updated note item.");
 			}
-			
+
 		} catch (StorageException e) {
 			storageError = e.getMessage();
 			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
@@ -134,14 +138,15 @@ public class HomeController {
 		return "home";
 	}
 
-	//---------- FILE ----------
+	// ---------- FILE ----------
 	@ModelAttribute("fileForm")
-	public FileForm getFileForm() { 
+	public FileForm getFileForm() {
 		return new FileForm();
-	}	
-	
+	}
+
 	@PostMapping("/file/upload")
-	public String fileUpload(Authentication authentication, @ModelAttribute("fileForm") MultipartFile file, Model model) {
+	public String fileUpload(Authentication authentication, @ModelAttribute("fileForm") MultipartFile file,
+			Model model) {
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
@@ -154,34 +159,51 @@ public class HomeController {
 			storageError = e.getMessage();
 			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
 		}
-		
+
 		allUserFiles(authentication, model);
-		
+
 		return "home";
 	}
-	
+
 	@GetMapping("/file/delete/{fileId}")
 	public String fileDelete(@PathVariable("fileId") Integer fileId, Authentication authentication, Model model) {
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
 			fileService.deleteUserStoredData(fileId, userName);
-			model.addAttribute(HOME_MESSAGE_FIELD,"Successfully deleted file.");
+			model.addAttribute(HOME_MESSAGE_FIELD, "Successfully deleted file.");
 		} catch (StorageException e) {
 			storageError = e.getMessage();
 			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
 		}
-		
+
 		allUserFiles(authentication, model);
 		return "home";
-	}	
+	}
+
+	@GetMapping("/file/view/{fileId}")
+	public ResponseEntity<ByteArrayResource> fileView(@PathVariable("fileId") Integer fileId,
+			Authentication authentication, Model model) {
+		String userName = authentication.getName();
+		FileEntity fileEntity = fileService.getFileEntity(fileId, userName);
+		ByteArrayResource resource = new ByteArrayResource(fileEntity.getFiledata());
+		System.out.println("====> CONTENT_TYPE: " + fileEntity.getContenttype());
+//		ContentDisposition contentDisposition = ContentDisposition.builder("inline")
+//		          .filename(fileEntity.getFilename())
+//		          .build();
 		
-	@GetMapping("/file/view")
-	public String fileView(Authentication authentication, @ModelAttribute("fileForm") MultipartFile file, Model model) {
-		
-		return "home";
-	}	
+		return ResponseEntity.ok()
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.contentLength(Long.parseLong(fileEntity.getFilesize()))
+				.header("Content-Disposition", "attachment; filename=" + fileEntity.getFilename())
+				.body(resource);
+
+
+	}
 	
+	
+	
+
 	@ModelAttribute
 	public void allUserFiles(Authentication authentication, Model model) {
 		String userName = authentication.getName();

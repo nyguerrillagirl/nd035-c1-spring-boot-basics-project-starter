@@ -35,6 +35,20 @@ public class FileService extends StorageServiceUtility implements StorageService
 		this.rootLocation = Paths.get(properties.getLocation());
 	}
 	
+	public FileEntity getFileEntity(Integer fileId, String username) {
+		User user = getUser(username);
+		FileEntity fileEntity = mapper.findFile(fileId);
+		if (fileEntity == null) {
+			throw new StorageException("Failed to find file record.");
+		}
+		
+		if (userOwnsResource(user, fileEntity.getUserid())) {
+			// Sent the record back
+			return fileEntity;
+		} else {
+			throw new StorageException("User does not own that file resource.");
+		}
+	}
 	
 	@Override
 	public List<FileEntity> getUsersStoredData(Integer userid) {
@@ -100,10 +114,6 @@ public class FileService extends StorageServiceUtility implements StorageService
 		}
 	}
 	
-	public FileForm downloadStoredData(Integer fileId) {
-		return null;
-	}
-
 	@Override
 	public boolean additionalContraintsPassed(FileEntity modelRecord) {
 		// TODO Auto-generated method stub

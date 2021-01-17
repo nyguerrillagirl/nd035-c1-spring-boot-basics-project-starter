@@ -70,8 +70,9 @@
 								</tr>
 								<tr th:each="fileEntry : ${fileList}"
 									th:if="${fileList!=null and fileList.size() > 0}">
-									<td><a target="_blank" class="btn btn-success">View</a> <a
-										class="btn btn-danger" th:href="@{/home/file/delete/{fileId}(fileId=${fileEntry.fileId})}">Delete</a></td>
+									<td>
+									<a target="_blank" class="btn btn-success" th:href="@{/home/file/view/{fileId}(fileId=${fileEntry.fileId})}">View</a> 
+									<a class="btn btn-danger" th:href="@{/home/file/delete/{fileId}(fileId=${fileEntry.fileId})}">Delete</a></td>
 
 									<th scope="row" th:text="${fileEntry.filename}">ExampleFile.txt</th>
 								</tr>
