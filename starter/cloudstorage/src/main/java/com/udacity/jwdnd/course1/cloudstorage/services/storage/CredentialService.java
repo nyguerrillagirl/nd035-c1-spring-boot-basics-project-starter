@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialMapper;
-import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.model.CredentialEntity;
 import com.udacity.jwdnd.course1.cloudstorage.model.CredentialEnhancedRecord;
 import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
@@ -29,10 +29,10 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 
 	@Override
 	public List<CredentialEnhancedRecord> getUsersStoredData(Integer userid) {
-		List<Credential> credentialList = mapper.getAllUserCredentials(userid);
+		List<CredentialEntity> credentialList = mapper.getAllUserCredentials(userid);
 		
 		List<CredentialEnhancedRecord> credentialEnhanced = new ArrayList<CredentialEnhancedRecord>();
-		for (Credential aCredentialRecord : credentialList) {
+		for (CredentialEntity aCredentialRecord : credentialList) {
 			CredentialEnhancedRecord record = new CredentialEnhancedRecord(aCredentialRecord);
 			String unenryptedPassword = encryptionService.decryptValue(aCredentialRecord.getPassword(),
 					aCredentialRecord.getKey());
@@ -44,7 +44,7 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 	
 	@Override
 	public void insertUserStoredData(CredentialForm formRecord, String username) {
-		Credential credentialRecord = new Credential();
+		CredentialEntity credentialRecord = new CredentialEntity();
 
 		// Get/Save owner of this credential resource
 		User user = getUser(username);
@@ -82,7 +82,7 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 		Integer id = formRecord.getCredentialId();
 		
 		// Get credentialRecord
-		Credential credential = mapper.findCredential(id);
+		CredentialEntity credential = mapper.findCredential(id);
 		if (credential == null) {
 			throw new StorageException(String.format("Credential record %d not found for update.", id));
 		}
@@ -109,7 +109,7 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 	@Override
 	public void deleteUserStoredData(Integer credentialid, String username) {
 		User user = getUser(username);
-		Credential credentialRecord = mapper.findCredential(credentialid);
+		CredentialEntity credentialRecord = mapper.findCredential(credentialid);
 		if  (credentialRecord == null) {
 			throw new StorageException("That record does not exist.");
 		}
@@ -131,7 +131,7 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 	public boolean additionalContraintsPassed(CredentialEnhancedRecord modelRecord) {
 		// See if we have a record matching this Credential record --> user should be
 		// doing an update!
-		Credential credentialRecord = mapper.findMatchingUseridUrlAndUsername(modelRecord.getUserid(),
+		CredentialEntity credentialRecord = mapper.findMatchingUseridUrlAndUsername(modelRecord.getUserid(),
 				modelRecord.getUrl(), modelRecord.getUsername());
 		return credentialRecord == null;
 	}

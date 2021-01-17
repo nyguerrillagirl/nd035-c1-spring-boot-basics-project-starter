@@ -6,26 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
-import com.udacity.jwdnd.course1.cloudstorage.model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.model.NoteEntity;
 import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 
 
 @Service
-public class NoteService extends StorageServiceUtility implements StorageService<NoteForm, Note>{
+public class NoteService extends StorageServiceUtility implements StorageService<NoteForm, NoteEntity>{
 	
 	@Autowired
 	private NoteMapper mapper;
 
 	@Override
-	public List<Note> getUsersStoredData(Integer userid) {
-		List<Note> notes = mapper.getAllUserNotes(userid);
+	public List<NoteEntity> getUsersStoredData(Integer userid) {
+		List<NoteEntity> notes = mapper.getAllUserNotes(userid);
 		return notes;
 	}
 
 	@Override
 	public void insertUserStoredData(NoteForm formRecord, String username) {
-		Note noteRecord = new Note();
+		NoteEntity noteRecord = new NoteEntity();
 		// Get and then save owner of this note record
 		User user = getUser(username);
 		noteRecord.setUserid(user.getUserid());
@@ -45,7 +45,7 @@ public class NoteService extends StorageServiceUtility implements StorageService
 		Integer id = formRecord.getNoteId();
 		
 		// Get Existing note record
-		Note noteRecord = mapper.findNote(id);
+		NoteEntity noteRecord = mapper.findNote(id);
 		
 		if (noteRecord == null) {
 			throw new StorageException(String.format("Note record %d not found for update.", id));
@@ -67,7 +67,7 @@ public class NoteService extends StorageServiceUtility implements StorageService
 	@Override
 	public void deleteUserStoredData(Integer noteid, String username) {
 		User user = getUser(username);
-		Note noteRecord = mapper.findNote(noteid);
+		NoteEntity noteRecord = mapper.findNote(noteid);
 		
 		if  (noteRecord == null) {
 		  throw new StorageException("That record does not exist.");
@@ -81,7 +81,7 @@ public class NoteService extends StorageServiceUtility implements StorageService
 	}
 
 	@Override
-	public boolean additionalContraintsPassed(Note modelRecord) {
+	public boolean additionalContraintsPassed(NoteEntity modelRecord) {
 		// vacuously true
 		return true;
 	}

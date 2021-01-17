@@ -7,7 +7,7 @@ public interface StorageService<F,M> {
 	List<M> getUsersStoredData(Integer userid);
 	public void insertUserStoredData(F formRecord, String username);
 	public void updateUserStoredData(F formRecord, String username);
-	public void deleteUserStoredData(Integer credentialid, String username);
+	public void deleteUserStoredData(Integer resourceId, String username);
 	
 	// This is used by any storage mechanism to check additional constraints (if any)
 	// that make sense for the storage type

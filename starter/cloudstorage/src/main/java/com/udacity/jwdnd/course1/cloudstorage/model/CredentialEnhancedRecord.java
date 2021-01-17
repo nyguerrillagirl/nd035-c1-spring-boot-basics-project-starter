@@ -1,12 +1,12 @@
 package com.udacity.jwdnd.course1.cloudstorage.model;
 
-public class CredentialEnhancedRecord extends Credential {
+public class CredentialEnhancedRecord extends CredentialEntity {
 
 	protected String clearPassword;
 
 	public CredentialEnhancedRecord() {}
 	
-	public CredentialEnhancedRecord(Credential credential) {
+	public CredentialEnhancedRecord(CredentialEntity credential) {
 		super(credential);
 	}
 	

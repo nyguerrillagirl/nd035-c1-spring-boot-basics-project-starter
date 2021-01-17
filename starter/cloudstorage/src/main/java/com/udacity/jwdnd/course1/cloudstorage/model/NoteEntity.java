@@ -1,6 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.model;
 
-public class Note {
+public class NoteEntity {
 
 	private Integer noteid;
 	private String notetitle;

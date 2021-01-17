@@ -1,6 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.model;
 
-public class Credential {
+public class CredentialEntity {
 
 	protected Integer credentialid;
 	protected String url;
@@ -21,9 +21,9 @@ public class Credential {
 		
 	}
 	
-	public Credential() {}
+	public CredentialEntity() {}
 	
-	public Credential(Credential credential) {
+	public CredentialEntity(CredentialEntity credential) {
 		this.credentialid = credential.getCredentialid();
 		this.url = credential.getUrl();
 		this.username = credential.getUsername();
