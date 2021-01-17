@@ -19,8 +19,8 @@
 					class="btn btn-secondary float-right">Logout</button>
 			</form>
 		</div>
-		<div id="error-msg" th:if="${signupError}" class="alert alert-danger">
-			<span th:text="${signupError}">Example Signup Error Message</span>
+		<div id="error-msg" th:if="${storageError}" class="alert alert-danger">
+			<span th:text="${storageError}">Example Storage Error Message</span>
 		</div>
 		<div id="contentDiv" style="clear: right;">
 			<nav style="clear: right;">
@@ -104,8 +104,11 @@
 								<tr th:each="noteEntry : ${noteList}"
 									th:if="${noteList!=null and noteList.size() > 0}">
 									<td>
-										<button type="button" class="btn btn-success">Edit</button> <a
-										class="btn btn-danger">Delete</a>
+	          							<button th:onclick="showNoteModal([[${noteEntry.getNoteid()}]], [[${noteEntry.getNotetitle()}]],[[${noteEntry.getNotedescription()}]])" 
+            							type="button" class="btn btn-success">Edit</button>
+          								
+          								<a class="btn btn-danger" th:href="@{/home/note/{noteid}(noteid=${noteEntry.noteid})}">Delete</a>
+										
 									</td>
 									<th scope="row" th:text="${noteEntry.notetitle}">Example
 										Note Title</th>
@@ -128,7 +131,8 @@
 									</button>
 								</div>
 								<div class="modal-body">
-									<form action="#" method="POST">
+									<form action="#" method="POST" th:action="@{/home/note}"
+										th:object="${noteForm}">
 										<input type="hidden" name="noteId" id="note-id">
 										<div class="form-group">
 											<label for="note-title" class="col-form-label">Title</label>

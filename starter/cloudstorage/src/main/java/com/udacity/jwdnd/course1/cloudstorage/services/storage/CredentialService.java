@@ -14,7 +14,6 @@ import com.udacity.jwdnd.course1.cloudstorage.model.CredentialEnhancedRecord;
 import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
-import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 
 @Service
 public class CredentialService extends StorageServiceUtility implements StorageService<CredentialForm, CredentialEnhancedRecord> {
@@ -47,7 +46,7 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 	public void insertUserStoredData(CredentialForm formRecord, String username) {
 		Credential credentialRecord = new Credential();
 
-		// Save owner of this credential resource
+		// Get/Save owner of this credential resource
 		User user = getUser(username);
 		credentialRecord.setUserid(user.getUserid());
 		// Save the username and url
@@ -77,13 +76,16 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 	}
 
 	@Override
-	public void updateUserStoredData(CredentialForm formRecord, String username, Integer id) {
+	public void updateUserStoredData(CredentialForm formRecord, String username) {
 		// Get User record
 		User user = getUser(username);
+		Integer id = formRecord.getCredentialId();
 		
 		// Get credentialRecord
 		Credential credential = mapper.findCredential(id);
-		
+		if (credential == null) {
+			throw new StorageException(String.format("Credential record %d not found for update.", id));
+		}
 		// Now check if this credential record belongs to this user
 		if (userOwnsResource(user, credential.getUserid())) {
 			// Update all key fields: username, url and password

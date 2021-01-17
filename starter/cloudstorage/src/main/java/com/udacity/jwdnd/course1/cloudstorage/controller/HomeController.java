@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.udacity.jwdnd.course1.cloudstorage.common.CloudStorageConstants;
 import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
+import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import com.udacity.jwdnd.course1.cloudstorage.services.storage.CredentialService;
@@ -47,20 +48,20 @@ public class HomeController {
 	public String deleteCredential(@PathVariable("credentialid") Integer credentialid, Authentication authentication,
 			Model model) {
 		
-		String signupError = null;
+		String storageError = null;
 		String userName = authentication.getName();
 		try {
 			credentialService.deleteUserStoredData(credentialid, userName);
 		} catch (StorageException e) {
-			signupError = e.getMessage();
-			model.addAttribute("signupError", signupError);
+			storageError = e.getMessage();
+			model.addAttribute("storageError", storageError);
 		}		
 		allUserFiles(authentication, model);
 		return "home";
 	}
-
+		
 	@PostMapping("/credential")
-	public String addCredential(Authentication authentication, CredentialForm credentialForm, Model model) {
+	public String addorUpdateCredential(Authentication authentication, CredentialForm credentialForm, Model model) {
 		String signupError = null;
 		String userName = authentication.getName();
 		try {
@@ -69,7 +70,7 @@ public class HomeController {
 				// new entry
 				credentialService.insertUserStoredData(credentialForm, userName);
 			} else {
-				credentialService.updateUserStoredData(credentialForm, userName, credentialForm.getCredentialId());
+				credentialService.updateUserStoredData(credentialForm, userName);
 			}
 			
 		} catch (StorageException e) {
@@ -79,7 +80,45 @@ public class HomeController {
 		allUserFiles(authentication, model);
 		return "home";
 	}
-
+	
+	@GetMapping("/note/{noteid}")
+	public String deleteNote(@PathVariable("noteid") Integer noteid, Authentication authentication,
+			Model model) {
+		
+		String storageError = null;
+		String userName = authentication.getName();
+		try {
+			noteService.deleteUserStoredData(noteid, userName);
+		} catch (StorageException e) {
+			storageError = e.getMessage();
+			model.addAttribute("storageError", storageError);
+		}		
+		allUserFiles(authentication, model);
+		return "home";
+	}
+	
+	@PostMapping("/note")
+	public String addOrUpdateNote(Authentication authentication, NoteForm noteForm, Model model) {
+		String storageError = null;
+		String userName = authentication.getName();
+		try {
+			// need to determine if this is an insert or update
+			if (noteForm.getNoteId() == null) {
+				// new entry
+				noteService.insertUserStoredData(noteForm, userName);
+			} else {
+				// update
+				noteService.updateUserStoredData(noteForm, userName);
+			}
+			
+		} catch (StorageException e) {
+			storageError = e.getMessage();
+			model.addAttribute("storageError", storageError);
+		}
+		allUserFiles(authentication, model);
+		return "home";
+	}
+	
 	@ModelAttribute
 	public void allUserFiles(Authentication authentication, Model model) {
 		String userName = authentication.getName();
