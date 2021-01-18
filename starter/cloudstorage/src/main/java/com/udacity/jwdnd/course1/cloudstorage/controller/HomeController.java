@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.sun.net.httpserver.Headers;
 import com.udacity.jwdnd.course1.cloudstorage.common.CloudStorageConstants;
@@ -59,23 +60,25 @@ public class HomeController {
 	// ---------- CREDENTIAL ----------
 	@GetMapping("/credential/delete/{credentialid}")
 	public String deleteCredential(@PathVariable("credentialid") Integer credentialid, Authentication authentication,
-			Model model) {
+			Model model, RedirectAttributes redirectAttributes) {
 
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
 			credentialService.deleteUserStoredData(credentialid, userName);
-			model.addAttribute(HOME_MESSAGE_FIELD, "Successfully deleted credential item.");
+			//model.addAttribute(HOME_MESSAGE_FIELD, "Successfully deleted credential item.");
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, "Successfully deleted credential item.");
 		} catch (StorageException e) {
 			storageError = e.getMessage();
-			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
+			//model.addAttribute(HOME_MESSAGE_FIELD, storageError);
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, storageError);
 		}
 		allUserFiles(authentication, model);
-		return "home";
+		return "redirect:/home";
 	}
 
 	@PostMapping("/credential/addOrUpdate")
-	public String addOrUpdateCredential(Authentication authentication, CredentialForm credentialForm, Model model) {
+	public String addOrUpdateCredential(Authentication authentication, CredentialForm credentialForm, Model model, RedirectAttributes redirectAttributes) {
 		String signupError = null;
 		String userName = authentication.getName();
 		try {
@@ -83,39 +86,39 @@ public class HomeController {
 			if (credentialForm.getCredentialId() == null) {
 				// new entry
 				credentialService.insertUserStoredData(credentialForm, userName);
-				model.addAttribute(HOME_MESSAGE_FIELD, "Successfully created credential item.");
+				redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, "Successfully created credential item.");
 			} else {
 				credentialService.updateUserStoredData(credentialForm, userName);
-				model.addAttribute(HOME_MESSAGE_FIELD, "Successfully updated credential item.");
+				redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, "Successfully updated credential item.");
 			}
 
 		} catch (StorageException e) {
 			signupError = e.getMessage();
-			model.addAttribute(HOME_MESSAGE_FIELD, signupError);
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, signupError);
 		}
 		allUserFiles(authentication, model);
-		return "home";
+		return "redirect:/home";
 	}
 
 	// ---------- NOTE ----------
 	@GetMapping("/note/delete/{noteid}")
-	public String deleteNote(@PathVariable("noteid") Integer noteid, Authentication authentication, Model model) {
+	public String deleteNote(@PathVariable("noteid") Integer noteid, Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
 
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
 			noteService.deleteUserStoredData(noteid, userName);
-			model.addAttribute(HOME_MESSAGE_FIELD, "Successfully deleted note item.");
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, "Successfully deleted note item.");
 		} catch (StorageException e) {
 			storageError = e.getMessage();
-			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, storageError);
 		}
 		allUserFiles(authentication, model);
-		return "home";
+		return "redirect:/home";
 	}
 
 	@PostMapping("/note/addOrUpdate")
-	public String addOrUpdateNote(Authentication authentication, NoteForm noteForm, Model model) {
+	public String addOrUpdateNote(Authentication authentication, NoteForm noteForm, Model model, RedirectAttributes redirectAttributes) {
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
@@ -123,19 +126,19 @@ public class HomeController {
 			if (noteForm.getNoteId() == null) {
 				// new entry
 				noteService.insertUserStoredData(noteForm, userName);
-				model.addAttribute(HOME_MESSAGE_FIELD, "Successfully created note item.");
+				redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, "Successfully created note item.");
 			} else {
 				// update
 				noteService.updateUserStoredData(noteForm, userName);
-				model.addAttribute(HOME_MESSAGE_FIELD, "Successfully updated note item.");
+				redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, "Successfully updated note item.");
 			}
 
 		} catch (StorageException e) {
 			storageError = e.getMessage();
-			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, storageError);
 		}
 		allUserFiles(authentication, model);
-		return "home";
+		return "redirect:/home";
 	}
 
 	// ---------- FILE ----------
@@ -146,39 +149,39 @@ public class HomeController {
 
 	@PostMapping("/file/upload")
 	public String fileUpload(Authentication authentication, @ModelAttribute("fileForm") MultipartFile file,
-			Model model) {
+			Model model, RedirectAttributes redirectAttributes) {
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
 			FileForm fileForm = getFileForm();
 			fileForm.setFile(file);
 			fileService.insertUserStoredData(fileForm, userName);
-			model.addAttribute(HOME_MESSAGE_FIELD, "Successfully uploaded/saved file.");
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, "Successfully uploaded/saved file.");
 
 		} catch (StorageException e) {
 			storageError = e.getMessage();
-			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, storageError);
 		}
 
 		allUserFiles(authentication, model);
 
-		return "home";
+		return "redirect:/home";
 	}
 
 	@GetMapping("/file/delete/{fileId}")
-	public String fileDelete(@PathVariable("fileId") Integer fileId, Authentication authentication, Model model) {
+	public String fileDelete(@PathVariable("fileId") Integer fileId, Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
 		String storageError = null;
 		String userName = authentication.getName();
 		try {
 			fileService.deleteUserStoredData(fileId, userName);
-			model.addAttribute(HOME_MESSAGE_FIELD, "Successfully deleted file.");
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, "Successfully deleted file.");
 		} catch (StorageException e) {
 			storageError = e.getMessage();
-			model.addAttribute(HOME_MESSAGE_FIELD, storageError);
+			redirectAttributes.addFlashAttribute(HOME_MESSAGE_FIELD, storageError);
 		}
 
 		allUserFiles(authentication, model);
-		return "home";
+		return "redirect:/home";
 	}
 
 	@GetMapping("/file/view/{fileId}")
@@ -187,7 +190,6 @@ public class HomeController {
 		String userName = authentication.getName();
 		FileEntity fileEntity = fileService.getFileEntity(fileId, userName);
 		ByteArrayResource resource = new ByteArrayResource(fileEntity.getFiledata());
-		System.out.println("ContentType: " + fileEntity.getContenttype());
 		return ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType(fileEntity.getContenttype()))
 //				.contentType(MediaType.APPLICATION_OCTET_STREAM)

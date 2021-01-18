@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
 
 @Service
 public class CredentialService extends StorageServiceUtility implements StorageService<CredentialForm, CredentialEnhancedRecord> {
+	private static Logger logger = LoggerFactory.getLogger(CredentialService.class);
 
 	@Autowired
 	private CredentialMapper mapper;
@@ -115,6 +118,7 @@ public class CredentialService extends StorageServiceUtility implements StorageS
 		}
 		if (userOwnsResource(user, credentialRecord.getUserid())) {
 			// go ahead and delete
+			logger.info("====> deleting item: " + credentialRecord.getCredentialid());
 			mapper.deleteCredential(credentialid);
 		} else {
 			throw new StorageException(String.format("User %s does not own this credential resource", username));
