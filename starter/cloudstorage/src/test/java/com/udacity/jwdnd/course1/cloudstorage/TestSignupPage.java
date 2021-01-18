@@ -90,9 +90,12 @@ class TestSignupPage {
 		Thread.sleep(2000);
 
 		// Make sure we are still on the signup page
-		Assertions.assertEquals("Sign Up", driver.getTitle());
+		Assertions.assertEquals("Login", driver.getTitle());
 
+		driver.get(baseURL + "/signup");
+		
 		// Signup again - same user as before
+		driver.get(baseURL + "/signup");
 		signupPage = new SignupPage(driver);
 		signupPage.signup("John", "Doe", TEST_USER_NAME, "johndoeisCrazy!");
 		Thread.sleep(2000);

@@ -83,9 +83,6 @@ class TestLoginPage {
 		signupPage.signup("Fred", "Flintstone", TEST_USER_NAME, password);
 		Thread.sleep(2000);
 
-		// Click login link
-		signupPage.clickLoginPageLink(driver);
-		Thread.sleep(2000);
 
 		// Login
 		Assertions.assertEquals("Login", driver.getTitle());

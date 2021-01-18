@@ -23,6 +23,12 @@ public class HomePage {
 	@FindBy(css = "#nav-credentials-tab")
 	private WebElement navCredentialsTab;
 	
+	// Elements for Note Testing
+	
+	
+	// Elements for Credential Testing
+	
+	
     public HomePage(WebDriver webDriver) {
         PageFactory.initElements(webDriver, this);
     }

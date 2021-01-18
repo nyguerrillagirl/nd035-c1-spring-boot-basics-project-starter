@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
@@ -17,6 +18,7 @@ import com.udacity.jwdnd.course1.cloudstorage.model.User;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TestHomePage {
 
 	private static final String TEST_USER_NAME = "fredflintstone";
@@ -53,8 +55,11 @@ class TestHomePage {
 		}
 	}
 
+	
+	// Tests the flow of signup and then login and success and to the home page 
+	// and logs off
 	@Test
-	void testLogoutOnHomePage() throws InterruptedException {
+	public void testNavigationToHomePageAndLogout() throws InterruptedException {
 		// Signup new user
 		String password = "yabbadabbadoo";
 		driver.get("http://localhost:" + this.port + "/signup");
@@ -62,9 +67,6 @@ class TestHomePage {
 		signupPage.signup("Fred", "Flintstone", TEST_USER_NAME, password);
 		Thread.sleep(2000);
 
-		// Click login link
-		signupPage.clickLoginPageLink(driver);
-		Thread.sleep(2000);
 
 		// Login
 		Assertions.assertEquals("Login", driver.getTitle());
@@ -78,11 +80,13 @@ class TestHomePage {
 		assertTrue(homePage.atHomePage(driver));
 		Thread.sleep(2000);
 		
-		// Click on logout link
-		
-		// Make sure user cannot get to home screen
-		//TODO: Add specific instruction to test logout (e.g. something specific to home.html
+		// Now logoff
+		homePage.logout();
+		Assertions.assertEquals("Login", driver.getTitle());
+
+
 	}
+
 	
 
 
