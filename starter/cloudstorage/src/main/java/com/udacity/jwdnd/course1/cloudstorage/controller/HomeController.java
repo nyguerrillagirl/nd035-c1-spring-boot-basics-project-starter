@@ -57,7 +57,7 @@ public class HomeController {
 	}
 
 	// ---------- CREDENTIAL ----------
-	@GetMapping("/credential/{credentialid}")
+	@GetMapping("/credential/delete/{credentialid}")
 	public String deleteCredential(@PathVariable("credentialid") Integer credentialid, Authentication authentication,
 			Model model) {
 
@@ -74,8 +74,8 @@ public class HomeController {
 		return "home";
 	}
 
-	@PostMapping("/credential")
-	public String addorUpdateCredential(Authentication authentication, CredentialForm credentialForm, Model model) {
+	@PostMapping("/credential/addOrUpdate")
+	public String addOrUpdateCredential(Authentication authentication, CredentialForm credentialForm, Model model) {
 		String signupError = null;
 		String userName = authentication.getName();
 		try {
@@ -98,7 +98,7 @@ public class HomeController {
 	}
 
 	// ---------- NOTE ----------
-	@GetMapping("/note/{noteid}")
+	@GetMapping("/note/delete/{noteid}")
 	public String deleteNote(@PathVariable("noteid") Integer noteid, Authentication authentication, Model model) {
 
 		String storageError = null;
@@ -114,7 +114,7 @@ public class HomeController {
 		return "home";
 	}
 
-	@PostMapping("/note")
+	@PostMapping("/note/addOrUpdate")
 	public String addOrUpdateNote(Authentication authentication, NoteForm noteForm, Model model) {
 		String storageError = null;
 		String userName = authentication.getName();
