@@ -191,6 +191,7 @@ public class HomeController {
 		return ResponseEntity.ok()
 				.contentType(MediaType.parseMediaType(fileEntity.getContenttype()))
 //				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+//				.contentType(new MediaType(fileEntity.getContenttype()))
 				.contentLength(Long.parseLong(fileEntity.getFilesize()))
 				.header("Content-Disposition", "attachment; filename=" + fileEntity.getFilename())
 				.body(resource);
