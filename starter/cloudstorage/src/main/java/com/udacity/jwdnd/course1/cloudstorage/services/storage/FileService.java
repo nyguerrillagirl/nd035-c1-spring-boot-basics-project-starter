@@ -90,7 +90,11 @@ public class FileService extends StorageServiceUtility implements StorageService
 		fileEntity.setContenttype(uploadedFile.getContentType());
 		fileEntity.setFilesize(String.valueOf(uploadedFile.getSize()));
 		fileEntity.setFilename(destinationFile.getFileName().toString());
-		mapper.insertFile(fileEntity);	
+		if (additionalContraintsPassed(fileEntity)) {
+			mapper.insertFile(fileEntity);	
+		} else {
+			throw new StorageException("File has already been previously uploaded.");
+		}
 	}
 
 	
@@ -116,17 +120,10 @@ public class FileService extends StorageServiceUtility implements StorageService
 	
 	@Override
 	public boolean additionalContraintsPassed(FileEntity modelRecord) {
-		// TODO Auto-generated method stub
-		return false;
+		// See if we can find record in db with this userid and filename
+		FileEntity dbRecord = mapper.findFileByUserIdAndFilename(modelRecord.getUserid(), modelRecord.getFilename());
+		return dbRecord == null;
 	}
 	
-	public void init() {
-		try {
-			Files.createDirectories(rootLocation);
-		}
-		catch (IOException e) {
-			throw new StorageException("Could not initialize storage");
-		}
-	}
 
 }

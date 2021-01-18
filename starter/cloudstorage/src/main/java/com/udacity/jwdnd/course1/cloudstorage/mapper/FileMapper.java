@@ -16,6 +16,9 @@ public interface FileMapper {
 	@Select("SELECT * FROM FILES WHERE userid=#{userid}")
 	public List<FileEntity> getAllUserFiles(Integer userid);
 	
+	@Select("SELECT * FROM FILES WHERE userid=#{userid} AND filename=#{filename}")
+	public FileEntity findFileByUserIdAndFilename(Integer userid, String filename);
+	
 	@Insert("INSERT INTO FILES (filename, contenttype, filesize, userid, filedata) VALUES (#{filename},#{contenttype},#{filesize},#{userid},#{filedata})")
 	@Options(useGeneratedKeys = true, keyProperty = "fileId")
 	public void insertFile(FileEntity file);
