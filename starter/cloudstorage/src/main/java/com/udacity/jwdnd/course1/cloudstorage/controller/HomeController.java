@@ -187,17 +187,13 @@ public class HomeController {
 		String userName = authentication.getName();
 		FileEntity fileEntity = fileService.getFileEntity(fileId, userName);
 		ByteArrayResource resource = new ByteArrayResource(fileEntity.getFiledata());
-		System.out.println("====> CONTENT_TYPE: " + fileEntity.getContenttype());
-//		ContentDisposition contentDisposition = ContentDisposition.builder("inline")
-//		          .filename(fileEntity.getFilename())
-//		          .build();
-		
+		System.out.println("ContentType: " + fileEntity.getContenttype());
 		return ResponseEntity.ok()
-				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.contentType(MediaType.parseMediaType(fileEntity.getContenttype()))
+//				.contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.contentLength(Long.parseLong(fileEntity.getFilesize()))
 				.header("Content-Disposition", "attachment; filename=" + fileEntity.getFilename())
 				.body(resource);
-
 
 	}
 	
