@@ -26,16 +26,14 @@ public class HomePage {
 	@FindBy(id = "nav-notes-tab")
 	protected WebElement navNotesTab;
 	
-	@FindBy( id = "userTable")
-	protected WebElement noteTableElement;
 
 	// Elements for Note Testing
 	@FindBy(id = "noteAddBtn")
 	protected WebElement addNoteButton;
 	
-	@FindBy(id = "nav-credentials-tab")
-	protected WebElement navCredentialsTab;
-	
+	@FindBy( id = "userTable")
+	protected WebElement noteTableElement;
+		
 	@FindBy(id = "note-title")
 	protected WebElement dialogNoteTitle;
 	
@@ -57,6 +55,40 @@ public class HomePage {
 	@FindBy(id = "noteTableDescription")
 	protected WebElement noteTableDescription;
 	
+	// Elements for Credential Testing
+	
+	@FindBy(id = "nav-credentials-tab")
+	protected WebElement navCredentialsTab;
+
+	@FindBy(id = "addNewCredentialBtn")
+	protected WebElement addCredentialButton;
+	
+	@FindBy(id = "credential-url")
+	protected WebElement dialogCredentialUrl;
+	
+	@FindBy(id = "credential-username")
+	protected WebElement dialogCredentialUsername;
+	
+	@FindBy(id = "credential-password")
+	protected WebElement dialogCredentialPassword;
+	
+	@FindBy(id = "credentialSubmit")
+	protected WebElement dialogCredentialSubmit;
+	
+	@FindBy(id = "credentialTableUrl")
+	protected WebElement credentialTableUrl;
+	
+	@FindBy(id = "credentialTableUsername")
+	protected WebElement credentialTableUsername;
+	
+	@FindBy(id = "credentialTablePassword")
+	protected WebElement credentialTablePassword;
+	
+	@FindBy(id = "credentialTableEditBtn")
+	protected WebElement credentialTableEditButton;
+	
+	@FindBy(id = "credentialTableDeleteBtn")
+	protected WebElement credentialTableDeleteButton;
 	
 	
 	private JavascriptExecutor javaScriptExecutor;

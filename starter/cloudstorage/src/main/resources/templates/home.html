@@ -160,7 +160,7 @@
 				</div>
 				<div class="tab-pane fade" id="nav-credentials" role="tabpanel"
 					aria-labelledby="nav-credentials-tab">
-					<button style="margin: 0.25em;" type="button"
+					<button id="addNewCredentialBtn" style="margin: 0.25em;" type="button"
 						class="btn btn-info float-right" onclick="showCredentialModal()">
 						+ Add a New Credential</button>
 
@@ -185,15 +185,15 @@
 								<tr th:each="credentialEntry : ${credentialList}"
 									th:if="${credentialList!=null and credentialList.size() > 0}">
 									<td>
-										<button th:onclick="showCredentialModal([[${credentialEntry.getCredentialid()}]], [[${credentialEntry.getUrl()}]],[[${credentialEntry.getUsername()}]],[[${credentialEntry.getClearPassword()}]])" 
+										<button id="credentialTableEditBtn" th:onclick="showCredentialModal([[${credentialEntry.getCredentialid()}]], [[${credentialEntry.getUrl()}]],[[${credentialEntry.getUsername()}]],[[${credentialEntry.getClearPassword()}]])" 
 										type="button" class="btn btn-success">Edit</button>
-										<a class="btn btn-danger" th:href="@{/home/credential/delete/{credentialid}(credentialid=${credentialEntry.credentialid})}">Delete</a>
+										<a id="credentialTableDeleteBtn" class="btn btn-danger" th:href="@{/home/credential/delete/{credentialid}(credentialid=${credentialEntry.credentialid})}">Delete</a>
 									</td>
-									<th scope="row" th:text="${credentialEntry.url}">Example
+									<th id="credentialTableUrl" scope="row" th:text="${credentialEntry.url}">Example
 										Credential URL</th>
-									<td th:text="${credentialEntry.username}">Example
+									<td id="credentialTableUsername" th:text="${credentialEntry.username}">Example
 										Credential Username</td>
-									<td th:text="${credentialEntry.password}">Example
+									<td id="credentialTablePassword" th:text="${credentialEntry.password}">Example
 										Credential Password</td>
 								</tr>
 							</tbody>
@@ -219,17 +219,17 @@
 										th:object="${credentialForm}">
 										<input type="hidden" name="credentialId" id="credential-id">
 										<div class="form-group">
-											<label for="note-title" class="col-form-label">URL</label> <input
+											<label for="credential-url" class="col-form-label">URL</label> <input
 												type="text" name="url" class="form-control"
 												id="credential-url" maxlength="100" required>
 										</div>
 										<div class="form-group">
-											<label for="note-title" class="col-form-label">Username</label>
+											<label for="credential-username" class="col-form-label">Username</label>
 											<input type="text" name="username" class="form-control"
 												id="credential-username" maxlength="30" required>
 										</div>
 										<div class="form-group">
-											<label for="note-title" class="col-form-label">Password</label>
+											<label for="credential-password" class="col-form-label">Password</label>
 											<input type="text" name="password" class="form-control"
 												id="credential-password" maxlength="30" required>
 										</div>
