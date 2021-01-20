@@ -4,8 +4,6 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
@@ -13,8 +11,6 @@ import com.udacity.jwdnd.course1.cloudstorage.model.User;
 
 @Service
 public class UserService {
-
-	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
 	private final UserMapper userMapper;
 	private final HashService hashService;
@@ -25,7 +21,6 @@ public class UserService {
 	}
 
 	public boolean isUsernameAvailable(String username) {
-		User aUser = userMapper.getUserByName(username);
 		return userMapper.getUserByName(username) == null;
 	}
 

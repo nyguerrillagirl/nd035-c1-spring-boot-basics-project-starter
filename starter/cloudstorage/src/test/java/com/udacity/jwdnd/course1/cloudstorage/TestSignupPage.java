@@ -66,7 +66,7 @@ class TestSignupPage {
 	@Test
 	public void testUserSignupSuccess() throws InterruptedException {
 		String password = "whatabadpassword";
-		String messageText = "Hello!";
+		//String messageText = "Hello!";
 
 		driver.get(baseURL + "/signup");
 
@@ -82,7 +82,7 @@ class TestSignupPage {
 	@Test
 	public void testUserSignupFailure() throws InterruptedException {
 		String password = "whatabadpassword";
-		String messageText = "Hello!";
+		//String messageText = "Hello!";
 
 		driver.get(baseURL + "/signup");
 		SignupPage signupPage = new SignupPage(driver);

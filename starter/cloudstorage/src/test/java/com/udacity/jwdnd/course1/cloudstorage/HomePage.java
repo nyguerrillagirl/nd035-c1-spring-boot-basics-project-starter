@@ -1,9 +1,5 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-
-import java.time.Duration;
-
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,8 +11,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class HomePage {
 
 	private static final String HOME_TITLE = "Home";
-	private static final String EXAMPLE_NOTE_TITLE = "This is a test";
-	private static final String EXAMPLE_NOTE_DESCRIPTION = "TODO: Write note test case for add, edit and delete.";
 	
 	// Over all page elements
 	@FindBy(id = "logoutButton")
