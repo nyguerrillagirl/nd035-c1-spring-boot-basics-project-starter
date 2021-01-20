@@ -71,10 +71,10 @@
 								<tr th:each="fileEntry : ${fileList}"
 									th:if="${fileList!=null and fileList.size() > 0}">
 									<td>
-									<a target="_blank" class="btn btn-success" th:href="@{/home/file/view/{fileId}(fileId=${fileEntry.fileId})}">View</a> 
-									<a class="btn btn-danger" th:href="@{/home/file/delete/{fileId}(fileId=${fileEntry.fileId})}">Delete</a></td>
+									<a id="fileViewBtn" target="_blank" class="btn btn-success" th:href="@{/home/file/view/{fileId}(fileId=${fileEntry.fileId})}">View</a> 
+									<a id="fileDeleteBtn" class="btn btn-danger" th:href="@{/home/file/delete/{fileId}(fileId=${fileEntry.fileId})}">Delete</a></td>
 
-									<th scope="row" th:text="${fileEntry.filename}">ExampleFile.txt</th>
+									<th id="fileFileName" scope="row" th:text="${fileEntry.filename}">ExampleFile.txt</th>
 								</tr>
 							</tbody>
 						</table>
@@ -82,7 +82,7 @@
 				</div>
 				<div class="tab-pane fade" id="nav-notes" role="tabpanel"
 					aria-labelledby="nav-notes-tab">
-					<button style="margin: 0.25em;" type="button"
+					<button id="noteAddBtn" style="margin: 0.25em;" type="button" 
 						class="btn btn-info float-right" onclick="showNoteModal()">
 						+ Add a New Note</button>
 
@@ -105,15 +105,15 @@
 								<tr th:each="noteEntry : ${noteList}"
 									th:if="${noteList!=null and noteList.size() > 0}">
 									<td>
-	          							<button th:onclick="showNoteModal([[${noteEntry.getNoteid()}]], [[${noteEntry.getNotetitle()}]],[[${noteEntry.getNotedescription()}]])" 
+	          							<button id="noteTableEditBtn" th:onclick="showNoteModal([[${noteEntry.getNoteid()}]], [[${noteEntry.getNotetitle()}]],[[${noteEntry.getNotedescription()}]])" 
             							type="button" class="btn btn-success">Edit</button>
           								
-          								<a class="btn btn-danger" th:href="@{/home/note/delete/{noteid}(noteid=${noteEntry.noteid})}">Delete</a>
+          								<a id="noteTableDeleteBtn" class="btn btn-danger" th:href="@{/home/note/delete/{noteid}(noteid=${noteEntry.noteid})}">Delete</a>
 										
 									</td>
-									<th scope="row" th:text="${noteEntry.notetitle}">Example
+									<th id="noteTableTitle" scope="row" th:text="${noteEntry.notetitle}">Example
 										Note Title</th>
-									<td th:text="${noteEntry.notedescription}">Example Note
+									<td id="noteTableDescription" th:text="${noteEntry.notedescription}">Example Note
 										Description</td>
 								</tr>
 							</tbody>
@@ -151,7 +151,7 @@
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
 										data-dismiss="modal">Close</button>
-									<button type="button" class="btn btn-primary"
+									<button id="noteDialogSaveBtn" type="button" class="btn btn-primary"
 										onclick="$('#noteSubmit').click();">Save changes</button>
 								</div>
 							</div>

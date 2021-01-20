@@ -28,6 +28,9 @@ public interface NoteMapper {
 	@Delete("DELETE FROM NOTES where noteid=#{noteid}")
 	public void deleteNote(Integer noteid);
 	
+	@Delete("DELETE FROM NOTES where userid=#{userid}")
+	public void deleteAllUserNotes(Integer userid);
+	
 	@Update("UPDATE NOTES SET notetitle=#{notetitle}, notedescription=#{notedescription} WHERE noteid=#{noteid}")
 	public void updateNote(NoteEntity note);
 	

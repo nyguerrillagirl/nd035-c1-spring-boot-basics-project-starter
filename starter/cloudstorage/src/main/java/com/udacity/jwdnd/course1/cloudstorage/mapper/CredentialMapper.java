@@ -30,6 +30,9 @@ public interface CredentialMapper {
 	@Delete("DELETE FROM CREDENTIALS where credentialid=#{credentialid}")
 	public void deleteCredential(Integer credentialid);
 	
+	@Delete("DELETE FROM CREDENTIALS where userid=#{userid}")
+	public void deleteAllUserCredentials(Integer userid);
+	
 	@Update("UPDATE CREDENTIALS SET url=#{url}, username=#{username}, password=#{password} WHERE credentialid=#{credentialid}")
 	public void updateCredential(CredentialEntity credential);
 }
