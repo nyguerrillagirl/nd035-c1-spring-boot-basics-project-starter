@@ -1,5 +1,8 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -14,16 +17,23 @@ public class HomePage {
 	private static final String HOME_TITLE = "Home";
 	private static final String EXAMPLE_NOTE_TITLE = "This is a test";
 	private static final String EXAMPLE_NOTE_DESCRIPTION = "TODO: Write note test case for add, edit and delete.";
-	// Logout Button
+	
+	// Over all page elements
 	@FindBy(id = "logoutButton")
 	private WebElement logoutButton;
 
+	@FindBy(id = "error-msg")
+	protected WebElement messageElement;
+	
 	// File-Notes-Credentials Tab
 	@FindBy(id = "nav-files-tab")
 	protected WebElement navFilesTab;
 
 	@FindBy(id = "nav-notes-tab")
 	protected WebElement navNotesTab;
+	
+	@FindBy( id = "userTable")
+	protected WebElement noteTableElement;
 
 	// Elements for Note Testing
 	@FindBy(id = "noteAddBtn")
@@ -61,16 +71,12 @@ public class HomePage {
 		PageFactory.initElements(webDriver, this);
 		javaScriptExecutor = (JavascriptExecutor) webDriver;
 	}
-
-
-	// Elements for Credential Testing
-
-	public WebElement waitForVisibility(WebDriver driver, String elementId) {
-		// Set so it does not wait any longer than 10 seconds
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		WebElement webElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(elementId)));
-		return webElement;
+	
+	public void waitForVisibility(WebDriver driver, WebElement element) throws Error {
+        new WebDriverWait(driver, 40)
+                .until(ExpectedConditions.visibilityOf(element));
 	}
+
 	
 	public void clickOnWebElement(WebElement element) {
 		javaScriptExecutor.executeScript("arguments[0].click();", element);

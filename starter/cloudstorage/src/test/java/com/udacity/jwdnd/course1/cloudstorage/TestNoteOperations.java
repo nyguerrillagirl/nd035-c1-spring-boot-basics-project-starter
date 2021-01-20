@@ -54,7 +54,7 @@ public class TestNoteOperations {
 			driver.quit();
 		}
 
-		// clean up test user
+		// clean up test user and note assets
 		User user = userMapper.getUserByName(TEST_USER_NAME);
 		if (user != null) {
 			// clean  up any note assets		
@@ -63,10 +63,6 @@ public class TestNoteOperations {
 		}
 	}
 	   
-	private void waitForVisibility(WebElement element) throws Error {
-	        new WebDriverWait(driver, 40)
-	                .until(ExpectedConditions.visibilityOf(element));
-	}
 	
 	private HomePage signupAndLoginTestUser() throws InterruptedException {
 		// Signup new user
@@ -79,11 +75,10 @@ public class TestNoteOperations {
 
 		// Login
 		Assertions.assertEquals("Login", driver.getTitle());
-		// driver.get("http://localhost:" + this.port + "/login");
+		// Obtain the elements on Login page
 		LoginPage loginPage = new LoginPage(driver);
 		loginPage.login(TEST_USER_NAME, password);
-		Thread.sleep(2000);
-
+		//Thread.sleep(2000);
 		// Check that we are now at the home page
 		HomePage homePage = new HomePage(driver);
 		return homePage;
@@ -93,30 +88,33 @@ public class TestNoteOperations {
 	public void testCreateANewNote() throws InterruptedException {
 		
 		HomePage homePage = signupAndLoginTestUser();
-		Thread.sleep(2000);
+		
+		homePage.waitForVisibility(driver, homePage.navNotesTab);
+		// confirm that we are at the  home page
 		assertTrue(homePage.atHomePage(driver));
+		
 		// Now perform a click on the note tab
 		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
-		
+		homePage.waitForVisibility(driver, homePage.addNoteButton);
+	
 		// Click on Create button
 		homePage.clickOnWebElement(homePage.addNoteButton);
+		homePage.waitForVisibility(driver, homePage.dialogNoteTitle);
 		
-		// Fill it in 
+		// Fill  in the new note 
 		homePage.enterDataIntoElement(homePage.dialogNoteTitle, "Test Note");
 		homePage.enterDataIntoElement(homePage.dialogNoteDescription, "If this works I am going to a) drink a beer b) let my hair down c) TikTok for 30 minutes!");
-		Thread.sleep(2000);
 		
 		// Click on submit button
 		homePage.clickOnWebElement(homePage.dialogNoteSaveButton);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.messageElement);
 		
 		// Check for success message
 		assertTrue(homePage.doesHomePageMessageMatch("Successfully created note item."));
 		
 		// Navigate back to the note tab
 		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.addNoteButton);
 		
 		// Check list for new entry
 		homePage = new HomePage(driver); // since new page let's re-populate elements
@@ -133,11 +131,11 @@ public class TestNoteOperations {
 	@Test
 	public void testEditExistingNote() throws InterruptedException {
 		HomePage homePage = signupAndLoginTestUser();
-		Thread.sleep(2000);
 		assertTrue(homePage.atHomePage(driver));
+		
 		// Now perform a click on the note tab
 		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.addNoteButton);
 		
 		// Click on Create button
 		homePage.clickOnWebElement(homePage.addNoteButton);
@@ -145,48 +143,45 @@ public class TestNoteOperations {
 		// Fill it in 
 		homePage.enterDataIntoElement(homePage.dialogNoteTitle, "Test Note");
 		homePage.enterDataIntoElement(homePage.dialogNoteDescription, "If this works I am going to a) drink a beer b) let my hair down c) TikTok for 30 minutes!");
-		Thread.sleep(2000);
 		
 		// Click on submit button
 		homePage.clickOnWebElement(homePage.dialogNoteSaveButton);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.messageElement);
 		
 		// Check for success message
 		assertTrue(homePage.doesHomePageMessageMatch("Successfully created note item."));
 		
 		// Navigate back to the note tab
-		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
+//		homePage.clickOnWebElement(homePage.navNotesTab);
 		
 		// Check list for new entry
 		homePage = new HomePage(driver); // since new page let's re-populate elements
 		
 		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.noteTableTitle);
 
 		assertTrue(homePage.doesElementTextMatch(homePage.noteTableTitle, "Test Note"));
 		
 		// Select the note just created for editing
 		homePage.clickOnWebElement(homePage.noteTableEditButton);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.dialogNoteTitle);
 		
 		// Let's change the title
 		homePage.enterDataIntoElement(homePage.dialogNoteTitle, "Freds goals");
-		Thread.sleep(2000);
 		// Click on submit button
 		homePage.clickOnWebElement(homePage.dialogNoteSaveButton);
-		Thread.sleep(2000);
-
+		homePage.waitForVisibility(driver, homePage.messageElement);
+		
 		// Check that the title changed
 		homePage = new HomePage(driver); // since new page let's re-populate elements
 		
 		
 		// check the success message
 		assertTrue(homePage.doesHomePageMessageMatch("Successfully updated note item."));
-		Thread.sleep(5000);
 		
 		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.addNoteButton);
+
 		// Check update
 		assertTrue(homePage.doesElementTextMatch(homePage.noteTableTitle, "Freds goals"));
 		
@@ -201,11 +196,10 @@ public class TestNoteOperations {
 	@Test
 	public void testDeleteANote() throws InterruptedException {
 		HomePage homePage = signupAndLoginTestUser();
-		Thread.sleep(2000);
 		assertTrue(homePage.atHomePage(driver));
 		// Now perform a click on the note tab
 		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.addNoteButton);
 		
 		// Click on Create button
 		homePage.clickOnWebElement(homePage.addNoteButton);
@@ -213,11 +207,10 @@ public class TestNoteOperations {
 		// Fill it in 
 		homePage.enterDataIntoElement(homePage.dialogNoteTitle, "Test Note");
 		homePage.enterDataIntoElement(homePage.dialogNoteDescription, "If this works I am going to a) drink a beer b) let my hair down c) TikTok for 30 minutes!");
-		Thread.sleep(2000);
 		
 		// Click on submit button
 		homePage.clickOnWebElement(homePage.dialogNoteSaveButton);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.messageElement);
 		
 		// Check list for new entry
 		homePage = new HomePage(driver); // since new page let's re-populate elements
@@ -227,14 +220,14 @@ public class TestNoteOperations {
 		
 		// Navigate back to the note tab
 		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.addNoteButton);
 		
 
 		assertTrue(homePage.doesElementTextMatch(homePage.noteTableTitle, "Test Note"));
 		
 		// Delete this note
 		homePage.clickOnWebElement(homePage.noteTableDeleteButton);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.messageElement);
 		
 		// Check list for new entry
 		homePage = new HomePage(driver); // since new page let's re-populate elements
@@ -242,10 +235,9 @@ public class TestNoteOperations {
 		
 		// check the success message
 		assertTrue(homePage.doesHomePageMessageMatch("Successfully deleted note item."));
-		Thread.sleep(2000);
 		
 		homePage.clickOnWebElement(homePage.navNotesTab);
-		Thread.sleep(2000);
+		homePage.waitForVisibility(driver, homePage.addNoteButton);
 				
 		// Now logoff
 		homePage.logout();
