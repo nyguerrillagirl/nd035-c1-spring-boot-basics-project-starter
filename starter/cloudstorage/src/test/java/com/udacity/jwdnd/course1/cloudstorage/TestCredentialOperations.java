@@ -134,7 +134,7 @@ class TestCredentialOperations {
 	}
 	
 	@Test
-	public void testEditExistingNote() throws InterruptedException {
+	public void testEditExistingCredential() throws InterruptedException {
 		HomePage homePage = signupAndLoginTestUser();
 		assertTrue(homePage.atHomePage(driver));
 		
@@ -199,7 +199,7 @@ class TestCredentialOperations {
 	
 	
 	@Test
-	public void testDeleteANote() throws InterruptedException {
+	public void testDeleteACredential() throws InterruptedException {
 		HomePage homePage = signupAndLoginTestUser();
 		assertTrue(homePage.atHomePage(driver));
 		// Now perform a click on the credential tab
